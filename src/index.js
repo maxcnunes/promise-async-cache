@@ -1,7 +1,12 @@
 const debug = require('./debug')('promise-async-cache');
 
-
+/**
+ * Simple lib to cache data through async load process.
+ */
 export default class PromiseAsyncCache {
+  /**
+   * @param  {Function} options.load loads the data into the cache
+   */
   constructor ({ load }) {
     if (!load) { throw new Error('"load" is a required argument'); }
     this.load = load;
@@ -9,6 +14,15 @@ export default class PromiseAsyncCache {
     this.loading = {};
   }
 
+  /**
+   * Gets the data from the cache.
+   * - In case the data does not exist yet it will also cache the data.
+   * - Multiple calls at the same to the same key will be included
+   * in a waiting list until the firs call has been completed.
+   *
+   * @param  key
+   * @return {Promise}
+   */
   get (key) {
     return new Promise((resolve, reject) => {
       const result = this.cache[key];
